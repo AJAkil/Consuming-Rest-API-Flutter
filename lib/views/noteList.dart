@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/noteForListing.dart';
-
+import 'package:flutter_app/views/noteModify.dart';
 
 class NoteList extends StatelessWidget {
-
   final notes = [
     new NoteForListing("1", "Note 1", DateTime.now(), DateTime.now()),
     new NoteForListing("2", "Note 2", DateTime.now(), DateTime.now()),
     new NoteForListing("3", "Note 3", DateTime.now(), DateTime.now())
   ];
 
-  String formatDateTime(DateTime dateTime){
+  String formatDateTime(DateTime dateTime) {
     return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
   }
 
@@ -21,7 +20,10 @@ class NoteList extends StatelessWidget {
         title: Text('List of notes'),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (_) => NoteModify()));
+        },
         child: Icon(Icons.add),
       ),
       body: ListView.separated(
@@ -35,7 +37,12 @@ class NoteList extends StatelessWidget {
                 notes[index].noteTitle,
                 style: TextStyle(color: Theme.of(context).primaryColor),
               ),
-              subtitle: Text('Last edited on ${formatDateTime(notes[index].lastEditDateTime)}'),
+              subtitle: Text(
+                  'Last edited on ${formatDateTime(notes[index].lastEditDateTime)}'),
+              onTap: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (_) => NoteModify()));
+              },
             );
           },
           itemCount: notes.length),
