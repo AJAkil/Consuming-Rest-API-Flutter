@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/noteForListing.dart';
+import 'package:flutter_app/views/deleteNote.dart';
 import 'package:flutter_app/views/noteModify.dart';
 
 class NoteList extends StatelessWidget {
@@ -32,17 +33,38 @@ class NoteList extends StatelessWidget {
                 color: Colors.green,
               ),
           itemBuilder: (BuildContext context, index) {
-            return ListTile(
-              title: Text(
-                notes[index].noteTitle,
-                style: TextStyle(color: Theme.of(context).primaryColor),
+            return Dismissible(
+              background: Container(
+                color: Colors.red,
+                padding: EdgeInsets.all(10),
+                child: Align(
+                  child: Icon(Icons.delete, color: Colors.white,),
+                  alignment: Alignment.centerLeft,
+                ),
               ),
-              subtitle: Text(
-                  'Last edited on ${formatDateTime(notes[index].lastEditDateTime)}'),
-              onTap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (_) => NoteModify()));
+              key: ValueKey(notes[index].noteID),
+              direction: DismissDirection.startToEnd,
+              onDismissed: (direction) {},
+              confirmDismiss: (direction) async {
+                final result = await showDialog(
+                    context: context,
+                    builder: (_) => NoteDelete()
+                );
+                print(result);
+                return result;
               },
+              child: ListTile(
+                title: Text(
+                  notes[index].noteTitle,
+                  style: TextStyle(color: Theme.of(context).primaryColor),
+                ),
+                subtitle: Text(
+                    'Last edited on ${formatDateTime(notes[index].lastEditDateTime)}'),
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) => NoteModify(noteID: notes[index].noteID)));
+                },
+              ),
             );
           },
           itemCount: notes.length),
