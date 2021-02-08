@@ -1,17 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/noteForListing.dart';
+import 'package:flutter_app/services/notesServices.dart';
 import 'package:flutter_app/views/deleteNote.dart';
 import 'package:flutter_app/views/noteModify.dart';
+import 'package:get_it/get_it.dart';
 
-class NoteList extends StatelessWidget {
-  final notes = [
-    new NoteForListing("1", "Note 1", DateTime.now(), DateTime.now()),
-    new NoteForListing("2", "Note 2", DateTime.now(), DateTime.now()),
-    new NoteForListing("3", "Note 3", DateTime.now(), DateTime.now())
-  ];
+class NoteList extends StatefulWidget {
+  @override
+  _NoteListState createState() => _NoteListState();
+}
+
+class _NoteListState extends State<NoteList> {
+  // the service instance to access the service layer
+  NotesService get service => GetIt.instance<NotesService>();
+
+  List<NoteForListing> notes = [];
 
   String formatDateTime(DateTime dateTime) {
     return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
+  }
+
+  @override
+  void initState() {
+    notes = service.getNotesList();
+    super.initState();
   }
 
   @override
@@ -38,7 +50,10 @@ class NoteList extends StatelessWidget {
                 color: Colors.red,
                 padding: EdgeInsets.all(10),
                 child: Align(
-                  child: Icon(Icons.delete, color: Colors.white,),
+                  child: Icon(
+                    Icons.delete,
+                    color: Colors.white,
+                  ),
                   alignment: Alignment.centerLeft,
                 ),
               ),
@@ -47,9 +62,7 @@ class NoteList extends StatelessWidget {
               onDismissed: (direction) {},
               confirmDismiss: (direction) async {
                 final result = await showDialog(
-                    context: context,
-                    builder: (_) => NoteDelete()
-                );
+                    context: context, builder: (_) => NoteDelete());
                 print(result);
                 return result;
               },
