@@ -9,7 +9,6 @@ void setupLocator(){
   GetIt.instance.registerLazySingleton(() => NotesService());
 }
 
-
 void main() {
   setupLocator();
   runApp(MyApp());
